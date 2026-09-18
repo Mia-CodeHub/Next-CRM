@@ -1,0 +1,86 @@
+'use client';
+
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { User } from '@supabase/supabase-js';
+import { createBrowserClient } from '@/lib/supabase/client';
+import type { Profile } from '@/lib/types';
+
+interface AuthCtx {
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error?: string }>;
+  signUp: (email: string, password: string, fullName: string, tenantName: string) => Promise<{ error?: string }>;
+  signOut: () => Promise<void>;
+}
+
+const Ctx = createContext<AuthCtx>({} as AuthCtx);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createBrowserClient();
+
+  const fetchProfile = async (userId: string) => {
+    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    setProfile(data as Profile | null);
+  };
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      if (user) fetchProfile(user.id);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) fetchProfile(u.id);
+      else setProfile(null);
+    });
+
+    return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error?.message };
+  };
+
+  const signUp = async (email: string, password: string, fullName: string, tenantName: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) return { error: error.message };
+
+    if (data.user) {
+      const slug = tenantName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const { data: tenant } = await supabase
+        .from('tenants')
+        .insert({ name: tenantName, slug })
+        .select()
+        .single();
+
+      if (tenant) {
+        await supabase.from('profiles').insert({
+          id: data.user.id,
+          tenant_id: (tenant as { id: string }).id,
+          role: 'admin',
+          full_name: fullName,
+        });
+      }
+    }
+    return {};
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+  };
+
+  return <Ctx.Provider value={{ user, profile, loading, signIn, signUp, signOut }}>{children}</Ctx.Provider>;
+}
+
+export const useAuth = () => useContext(Ctx);
