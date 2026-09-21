@@ -2,7 +2,7 @@
 
 import { Form, Input, Select } from 'antd';
 import { useLocale } from '@/hooks/useLocale';
-import { CHANNELS } from '@/lib/constants';
+import { useChannels } from '@/hooks/useChannels';
 import type { Customer } from '@/lib/types';
 import { useEffect } from 'react';
 
@@ -13,6 +13,7 @@ interface Props {
 
 export function CustomerForm({ form, customer }: Props) {
   const { t } = useLocale();
+  const { channelOptions } = useChannels();
 
   useEffect(() => {
     if (customer) form.setFieldsValue(customer);
@@ -34,7 +35,7 @@ export function CustomerForm({ form, customer }: Props) {
         <Input.TextArea rows={2} />
       </Form.Item>
       <Form.Item name="channel_id" label={t('customers.channel')}>
-        <Select options={CHANNELS.map((c) => ({ value: c.value, label: c.label }))} allowClear />
+        <Select options={channelOptions} allowClear />
       </Form.Item>
       <Form.Item name="notes" label={t('customers.notes')}>
         <Input.TextArea rows={3} />

@@ -3,9 +3,10 @@
 import { Table, Input, Select, Space, Button, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ChannelTag } from '@/components/shared/ChannelTag';
+import { CustomerOrderHistory } from '@/components/customers/CustomerOrderHistory';
 import { useLocale } from '@/hooks/useLocale';
 import { useRBAC } from '@/hooks/useRBAC';
-import { CHANNELS } from '@/lib/constants';
+import { useChannels } from '@/hooks/useChannels';
 import type { Customer, CustomerFilters, PaginationParams } from '@/lib/types';
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 export function CustomerTable({ customers, loading, total, filters, setFilters, pagination, setPagination, onEdit, onDelete }: Props) {
   const { t } = useLocale();
   const { canEdit, canDelete } = useRBAC();
+  const { channelOptions } = useChannels();
 
   const columns = [
     { title: t('customers.name'), dataIndex: 'name', key: 'name' },
@@ -50,11 +52,11 @@ export function CustomerTable({ customers, loading, total, filters, setFilters, 
       <Space style={{ marginBottom: 16 }} wrap>
         <Input.Search placeholder={t('common.search')} onSearch={(v) => setFilters({ ...filters, search: v })} allowClear style={{ width: 250 }} />
         <Select
-          options={CHANNELS.map((c) => ({ value: c.value, label: c.label }))}
+          options={channelOptions}
           onChange={(v) => setFilters({ ...filters, channel: v })}
           allowClear
           placeholder={t('customers.channel')}
-          style={{ width: 150 }}
+          style={{ width: 200 }}
         />
       </Space>
       <Table
@@ -62,6 +64,11 @@ export function CustomerTable({ customers, loading, total, filters, setFilters, 
         dataSource={customers}
         loading={loading}
         rowKey="id"
+        expandable={{
+          expandedRowRender: (record: Customer) => (
+            <CustomerOrderHistory customerId={record.id} customerName={record.name} />
+          ),
+        }}
         pagination={{
           current: pagination.page,
           pageSize: pagination.pageSize,

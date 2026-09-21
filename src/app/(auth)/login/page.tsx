@@ -29,7 +29,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card style={{ width: 420, maxWidth: '90vw' }} variant="borderless">
+    <Card className="glass-auth" style={{ width: 420, maxWidth: '90vw' }} variant="borderless">
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
         <div style={{ textAlign: 'center' }}>
           <Title level={2} style={{ marginBottom: 4 }}>{t('auth.welcome')}</Title>

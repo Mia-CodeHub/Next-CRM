@@ -29,6 +29,7 @@ export function useProducts() {
   return {
     products, loading, total, filters, setFilters, pagination, setPagination, refetch: fetch,
     create: async (data: Partial<Product>) => { await svc.createProduct(supabase, data); await fetch(); },
+    createAndReturn: async (data: Partial<Product>) => { const p = await svc.createProduct(supabase, data); await fetch(); return p; },
     update: async (id: string, data: Partial<Product>) => { await svc.updateProduct(supabase, id, data); await fetch(); },
     remove: async (id: string) => { await svc.deleteProduct(supabase, id); await fetch(); },
   };

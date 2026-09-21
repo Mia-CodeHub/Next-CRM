@@ -11,6 +11,7 @@ interface AuthCtx {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (email: string, password: string, fullName: string, tenantName: string) => Promise<{ error?: string }>;
+  signUpWithInvite: (email: string, password: string, fullName: string, inviteCode: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 }
 
@@ -74,13 +75,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return {};
   };
 
+  const signUpWithInvite = async (email: string, password: string, fullName: string, inviteCode: string) => {
+    const { data: invite } = await supabase
+      .from('invites')
+      .select('*')
+      .eq('invite_code', inviteCode.toUpperCase())
+      .is('used_at', null)
+      .single();
+
+    if (!invite) return { error: 'Invalid or expired invite code' };
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) return { error: error.message };
+
+    if (data.user) {
+      await supabase.from('profiles').insert({
+        id: data.user.id,
+        tenant_id: (invite as { tenant_id: string }).tenant_id,
+        role: (invite as { role: string }).role,
+        full_name: fullName,
+      });
+
+      await supabase
+        .from('invites')
+        .update({ used_at: new Date().toISOString() })
+        .eq('id', (invite as { id: string }).id);
+    }
+    return {};
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
   };
 
-  return <Ctx.Provider value={{ user, profile, loading, signIn, signUp, signOut }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ user, profile, loading, signIn, signUp, signUpWithInvite, signOut }}>{children}</Ctx.Provider>;
 }
 
 export const useAuth = () => useContext(Ctx);

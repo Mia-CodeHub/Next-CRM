@@ -10,6 +10,82 @@ body {
   min-height: 100vh;
 }
 
+body[data-theme="dark"] {
+  background: linear-gradient(135deg, #0a0f1e 0%, #1a1035 50%, #0d1a2d 100%);
+  background-attachment: fixed;
+}
+
+body[data-theme="light"] {
+  background: linear-gradient(135deg, #f0f4f3 0%, #e8f5f0 50%, #f5f0f8 100%);
+  background-attachment: fixed;
+}
+
+/* Glass sidebar */
+.glass-sidebar {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-theme="light"] .glass-sidebar {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Glass header */
+.glass-header {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-theme="light"] .glass-header {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Glass content area */
+.glass-content {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body[data-theme="light"] .glass-content {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Auth glass card */
+.glass-auth {
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+body[data-theme="light"] .glass-auth {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Ant Design glass overrides */
+body[data-theme="dark"] .ant-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+body[data-theme="light"] .ant-card {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -26,4 +102,93 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Drawer sidebar */
+.glass-sidebar-drawer .ant-drawer-body {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body[data-theme="light"] .glass-sidebar-drawer .ant-drawer-body {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* Modal / Popover / Dropdown - solid background for readability */
+body[data-theme="dark"] .ant-modal .ant-modal-content {
+  background: #1a1f2e !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .ant-modal .ant-modal-header {
+  background: transparent !important;
+}
+
+body[data-theme="dark"] .ant-modal .ant-modal-title {
+  color: #e8e8e8 !important;
+  font-weight: 600;
+}
+
+body[data-theme="dark"] .ant-modal .ant-modal-body {
+  color: #d0d0d0;
+}
+
+body[data-theme="dark"] .ant-modal input,
+body[data-theme="dark"] .ant-modal textarea,
+body[data-theme="dark"] .ant-modal .ant-select-selector {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e0e0e0 !important;
+}
+
+body[data-theme="dark"] .ant-modal input::placeholder,
+body[data-theme="dark"] .ant-modal textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+body[data-theme="dark"] .ant-modal .ant-select-selection-item {
+  color: #e0e0e0 !important;
+}
+
+body[data-theme="dark"] .ant-modal .ant-checkbox-wrapper {
+  color: #d0d0d0;
+}
+
+body[data-theme="dark"] .ant-modal .role-perm-list {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body[data-theme="dark"] .ant-modal .role-perm-module {
+  color: #10B981;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .glass-header {
+    padding: 0 8px !important;
+  }
+
+  .ant-table {
+    font-size: 13px;
+  }
+
+  .ant-page-header {
+    padding: 8px 0;
+  }
+
+  .ant-card {
+    margin-bottom: 8px;
+  }
+
+  .kanban-board {
+    flex-direction: column !important;
+  }
+
+  .kanban-column {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
 }

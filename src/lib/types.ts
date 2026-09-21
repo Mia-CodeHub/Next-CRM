@@ -9,7 +9,10 @@ export type Product = Tables<'products'>;
 export type Customer = Tables<'customers'>;
 export type Profile = Tables<'profiles'>;
 export type Tenant = Tables<'tenants'>;
+export type ChannelType = Tables<'channel_types'>;
 export type Channel = Tables<'channels'>;
+export type Warehouse = Tables<'warehouses'>;
+export type Inventory = Tables<'inventory'>;
 export type OrderItem = Tables<'order_items'>;
 
 export interface PaginationParams {

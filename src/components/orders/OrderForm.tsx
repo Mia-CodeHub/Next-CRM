@@ -3,7 +3,9 @@
 import { Form, Input, Select, InputNumber, Button, Space, Card, Typography } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useLocale } from '@/hooks/useLocale';
-import { CHANNELS, ORDER_STATUSES } from '@/lib/constants';
+import { useChannels } from '@/hooks/useChannels';
+import { useWarehouses } from '@/hooks/useWarehouses';
+import { ORDER_STATUSES } from '@/lib/constants';
 
 const { Text } = Typography;
 
@@ -15,6 +17,8 @@ interface Props {
 
 export function OrderForm({ form, customers, products }: Props) {
   const { t } = useLocale();
+  const { channelOptions } = useChannels();
+  const { warehouseOptions } = useWarehouses();
 
   return (
     <Form form={form} layout="vertical">
@@ -27,7 +31,10 @@ export function OrderForm({ form, customers, products }: Props) {
         />
       </Form.Item>
       <Form.Item name="channel_id" label={t('orders.channel')} rules={[{ required: true }]}>
-        <Select options={CHANNELS.map((c) => ({ value: c.value, label: c.label }))} />
+        <Select options={channelOptions} />
+      </Form.Item>
+      <Form.Item name="warehouse_id" label={t('warehouse.title')}>
+        <Select options={warehouseOptions} allowClear />
       </Form.Item>
       <Form.Item name="order_code" label={t('orders.code')}>
         <Input />

@@ -1,13 +1,13 @@
 'use client';
 
 import { Tag } from 'antd';
-import { CHANNELS } from '@/lib/constants';
+import { useChannels } from '@/hooks/useChannels';
 
 export function ChannelTag({ channel }: { channel: string }) {
-  const item = CHANNELS.find((c) => c.value === channel);
+  const { getChannelLabel, getChannelColor } = useChannels();
   return (
-    <Tag color={item?.color || 'default'} style={{ borderRadius: 4 }}>
-      {item?.label || channel}
+    <Tag color={getChannelColor(channel)} style={{ borderRadius: 4 }}>
+      {getChannelLabel(channel)}
     </Tag>
   );
 }

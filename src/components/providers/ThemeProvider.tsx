@@ -17,6 +17,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (saved) setIsDark(saved === 'dark');
   }, []);
 
+  useEffect(() => {
+    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+
   const toggle = useCallback(() => {
     setIsDark((prev) => {
       localStorage.setItem('theme', prev ? 'light' : 'dark');
